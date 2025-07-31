@@ -1,24 +1,14 @@
 import React from "react";
 
-import {
-  Box,
-  Button,
-  Flex,
-  Text,
-  TextField,
-  Switch,
-  IconButton,
-} from "@radix-ui/themes";
 import { CopyIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { Box, Button, Flex, Text, IconButton } from "@radix-ui/themes";
 
 import { cn } from "@/lib/utils";
 
 import { generateTableData } from "@/tools/table/helpers";
 import type { TableConfiguration } from "@/tools/table/helpers";
-
-export type TableToolProps = {
-  defaultConfiguration?: TableConfiguration;
-};
+import { NumberInputField } from "@/components/ui/number-input-field";
+import { SwitchField } from "@/components/ui/switch-field";
 
 const DEFAULT_CONFIGURATION: TableConfiguration = {
   rows: 5,
@@ -27,6 +17,7 @@ const DEFAULT_CONFIGURATION: TableConfiguration = {
   cellHeight: 60,
   hasHeaderRow: true,
   hasPrimaryColumn: false,
+  hasStripes: false,
 };
 
 interface Status {
@@ -34,6 +25,10 @@ interface Status {
   message: string;
   data?: string;
 }
+
+export type TableToolProps = {
+  defaultConfiguration?: TableConfiguration;
+};
 
 export const TableTool: React.FC<TableToolProps> = ({
   defaultConfiguration = DEFAULT_CONFIGURATION,
@@ -109,118 +104,79 @@ export const TableTool: React.FC<TableToolProps> = ({
     <Box>
       <Flex direction="column" gap="3">
         <Flex gap="4">
-          <Box className="w-full">
-            <Text as="label" size="2" weight="medium">
-              Rows
-            </Text>
-            <TextField.Root
-              type="number"
-              value={configuration.rows.toString()}
-              onChange={(e) =>
-                updateConfig("rows", Math.max(1, parseInt(e.target.value) || 1))
-              }
-              min="1"
-              size="2"
-            />
-          </Box>
-
-          <Box className="w-full">
-            <Text as="label" size="2" weight="medium">
-              Columns
-            </Text>
-            <TextField.Root
-              type="number"
-              value={configuration.cols.toString()}
-              onChange={(e) =>
-                updateConfig("cols", Math.max(1, parseInt(e.target.value) || 1))
-              }
-              min="1"
-              size="2"
-            />
-          </Box>
+          <NumberInputField
+            label="Rows"
+            value={configuration.rows}
+            min={1}
+            onChange={(v) => updateConfig("rows", v)}
+            onIncrement={() => updateConfig("rows", configuration.rows + 1)}
+            onDecrement={() =>
+              configuration.rows > 1 &&
+              updateConfig("rows", configuration.rows - 1)
+            }
+          />
+          <NumberInputField
+            label="Columns"
+            value={configuration.cols}
+            min={1}
+            onChange={(v) => updateConfig("cols", v)}
+            onIncrement={() => updateConfig("cols", configuration.cols + 1)}
+            onDecrement={() =>
+              configuration.cols > 1 &&
+              updateConfig("cols", configuration.cols - 1)
+            }
+          />
         </Flex>
 
         <Flex gap="4">
-          <Box className="w-full">
-            <Text as="label" size="2" weight="medium">
-              Cell Width
-            </Text>
-            <TextField.Root
-              type="number"
-              value={configuration.cellWidth.toString()}
-              onChange={(e) =>
-                updateConfig("cellWidth", parseInt(e.target.value) || 120)
-              }
-              size="2"
-            />
-          </Box>
-
-          <Box className="w-full">
-            <Text as="label" size="2" weight="medium">
-              Cell Height
-            </Text>
-            <TextField.Root
-              type="number"
-              value={configuration.cellHeight.toString()}
-              onChange={(e) =>
-                updateConfig("cellHeight", parseInt(e.target.value) || 60)
-              }
-              size="2"
-            />
-          </Box>
+          <NumberInputField
+            label="Cell Width"
+            value={configuration.cellWidth}
+            min={1}
+            onChange={(v) => updateConfig("cellWidth", v)}
+            onIncrement={() =>
+              updateConfig("cellWidth", configuration.cellWidth + 1)
+            }
+            onDecrement={() =>
+              updateConfig("cellWidth", configuration.cellWidth - 1)
+            }
+          />
+          <NumberInputField
+            label="Cell Height"
+            value={configuration.cellHeight}
+            min={1}
+            onChange={(v) => updateConfig("cellHeight", v)}
+            onIncrement={() =>
+              updateConfig("cellHeight", configuration.cellHeight + 1)
+            }
+            onDecrement={() =>
+              updateConfig("cellHeight", configuration.cellHeight - 1)
+            }
+          />
         </Flex>
 
-        <Box>
-          <Flex
-            className="w-full"
-            direction={"row"}
-            align={"center"}
-            justify={"between"}
-            gap={"2"}
-          >
-            <Box>
-              <Text as="div" size="2" weight="bold">
-                Header Row
-              </Text>
-              <Text as="div" size={"1"} weight={"light"}>
-                Include a header row at the top of the table.
-              </Text>
-            </Box>
-            <Switch
-              checked={configuration.hasHeaderRow}
-              onCheckedChange={(checked) =>
-                updateConfig("hasHeaderRow", checked)
-              }
-              size="2"
-            />
-          </Flex>
-        </Box>
+        <SwitchField
+          label="Header Row"
+          description="Include a header row at the top of the table."
+          checked={configuration.hasHeaderRow}
+          onCheckedChange={(checked) => updateConfig("hasHeaderRow", checked)}
+        />
 
-        <Box>
-          <Flex
-            className="w-full"
-            direction={"row"}
-            align={"center"}
-            justify={"between"}
-            gap={"2"}
-          >
-            <Box>
-              <Text as="div" size="2" weight="bold">
-                Primary Column
-              </Text>
-              <Text as="div" size={"1"} weight={"light"}>
-                Include a primary column row at the left of the table.
-              </Text>
-            </Box>
-            <Switch
-              checked={configuration.hasPrimaryColumn}
-              onCheckedChange={(checked) =>
-                updateConfig("hasPrimaryColumn", checked)
-              }
-              size="2"
-            />
-          </Flex>
-        </Box>
+        <SwitchField
+          label="Primary Column"
+          description="Include a primary column row at the left of the table."
+          checked={configuration.hasPrimaryColumn}
+          onCheckedChange={(checked) =>
+            updateConfig("hasPrimaryColumn", checked)
+          }
+        />
+
+        <SwitchField
+          label="Stripes"
+          description="Alternate row colors for better readability."
+          checked={configuration.hasStripes}
+          onCheckedChange={(checked) => updateConfig("hasStripes", checked)}
+        />
 
         <Button
           size="3"

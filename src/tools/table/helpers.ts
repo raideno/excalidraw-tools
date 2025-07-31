@@ -5,6 +5,7 @@ export interface TableConfiguration {
   cellHeight: number;
   hasHeaderRow: boolean;
   hasPrimaryColumn: boolean;
+  hasStripes: boolean;
 }
 
 export const generateTableData = (tableConfiguration: TableConfiguration) => {
@@ -55,6 +56,11 @@ export const generateTableData = (tableConfiguration: TableConfiguration) => {
         backgroundColor = "#d3d3d3";
       } else if (c === 0 && tableConfiguration.hasPrimaryColumn) {
         backgroundColor = "#e8e8e8";
+      } else if (tableConfiguration.hasStripes) {
+        const dataRowIndex = tableConfiguration.hasHeaderRow ? r - 1 : r;
+        if (dataRowIndex >= 0 && dataRowIndex % 2 === 1) {
+          backgroundColor = "#f5f5f5";
+        }
       }
 
       elements.push({
