@@ -13,6 +13,7 @@ export default defineConfig({
       "https://github.com/raideno/excalidraw-tools"
     ),
   },
+  base: "/excalidraw-tools/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
