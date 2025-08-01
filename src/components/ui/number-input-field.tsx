@@ -6,8 +6,8 @@ export interface NumberInputFieldProps {
   value: number;
   min?: number;
   onChange: (value: number) => void;
-  onIncrement: () => void;
-  onDecrement: () => void;
+  onIncrement?: () => void;
+  onDecrement?: () => void;
 }
 
 export const NumberInputField: React.FC<NumberInputFieldProps> = ({
@@ -29,26 +29,30 @@ export const NumberInputField: React.FC<NumberInputFieldProps> = ({
       min={min.toString()}
       size="2"
     >
-      <TextField.Slot side="right">
-        <IconButton
-          className="!cursor-pointer"
-          variant={"ghost"}
-          size={"1"}
-          onClick={onIncrement}
-        >
-          <PlusIcon />
-        </IconButton>
-      </TextField.Slot>
-      <TextField.Slot side="right">
-        <IconButton
-          className="!cursor-pointer"
-          variant={"ghost"}
-          size={"1"}
-          onClick={onDecrement}
-        >
-          <MinusIcon />
-        </IconButton>
-      </TextField.Slot>
+      {onIncrement && (
+        <TextField.Slot side="right">
+          <IconButton
+            className="!cursor-pointer"
+            variant={"ghost"}
+            size={"1"}
+            onClick={onIncrement}
+          >
+            <PlusIcon />
+          </IconButton>
+        </TextField.Slot>
+      )}
+      {onDecrement && (
+        <TextField.Slot side="right">
+          <IconButton
+            className="!cursor-pointer"
+            variant={"ghost"}
+            size={"1"}
+            onClick={onDecrement}
+          >
+            <MinusIcon />
+          </IconButton>
+        </TextField.Slot>
+      )}
     </TextField.Root>
   </Box>
 );

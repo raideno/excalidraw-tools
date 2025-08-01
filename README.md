@@ -7,6 +7,7 @@ A collection of excalidraw tools.
 ## Todos
 - [ ] Add a preview of the generated table.
 - [ ] Add more granular controls over the generated table.
+- [ ] Extract color picker from excalidraw.
 
 ## Contributions
 
