@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 import { generateTableData } from "@/tools/table/helpers";
 import type { TableConfiguration } from "@/tools/table/helpers";
+
 import { NumberInputField } from "@/components/ui/number-input-field";
 import { SwitchField } from "@/components/ui/switch-field";
 

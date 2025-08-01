@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@excalidraw/common": "^0.18.0-f0063e113",
+    "@excalidraw/math": "^0.18.0-f0063e113",
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/themes": "^3.2.1",
     "@tailwindcss/vite": "^4.1.11",
