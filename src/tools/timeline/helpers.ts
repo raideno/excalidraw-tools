@@ -1,5 +1,8 @@
 import { COLOR_PALETTE } from "@excalidraw/common";
 
+import type { Radians } from "@excalidraw/math";
+import type { ExcalidrawRectangleElement } from "@excalidraw/excalidraw/element/types";
+
 export interface Span {
   // NOTE: integer
   start: number;
@@ -31,7 +34,7 @@ export const generateTimelineData = (
   timelineConfiguration: TimelineConfiguration
 ) => {
   const { spans } = timelineConfiguration;
-  const elements = [];
+  const elements: Array<unknown> = [];
   let idCounter = 1;
 
   if (spans.length === 0) {
@@ -62,13 +65,23 @@ export const generateTimelineData = (
     backgroundColor: DEFAULT_BACKGROUND_COLOR,
     fillStyle: "hachure",
     strokeWidth: 2,
+    strokeStyle: "solid",
+    roughness: 1,
+    opacity: 100,
+    angle: 5.87 as Radians,
+    index: null,
     roundness: { type: 3 },
     seed: Math.floor(Math.random() * 100000),
     version: 1,
     versionNonce: Math.floor(Math.random() * 100000),
     isDeleted: false,
     groupIds: [],
-  });
+    frameId: null,
+    boundElements: [],
+    link: null,
+    locked: false,
+    updated: Date.now(),
+  } as ExcalidrawRectangleElement);
 
   for (let i = 1; i < maxLine; i++) {
     const lineY = START_Y + i * lineHeigh;
