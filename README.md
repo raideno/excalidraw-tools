@@ -8,6 +8,8 @@ A collection of excalidraw tools.
 - [ ] Add a preview of the generated table.
 - [ ] Add more granular controls over the generated table.
 - [ ] Extract color picker from excalidraw.
+- [ ] Add a math chart tool; Take in a math formula and produce a chart.
+- [ ] Produce a scatter plot, take in an array of points and plot them.
 
 ## Contributions
 
