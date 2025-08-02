@@ -68,7 +68,7 @@ export const generateTimelineData = (
     strokeStyle: "solid",
     roughness: 1,
     opacity: 100,
-    angle: 5.87 as Radians,
+    angle: 0 as Radians,
     index: null,
     roundness: { type: 3 },
     seed: Math.floor(Math.random() * 100000),
