@@ -8,6 +8,7 @@ export interface Tool {
   name: string;
   description: string;
   component: React.FC;
+  experimental?: boolean;
 }
 
 export const tools: Array<Tool> = [
@@ -25,5 +26,6 @@ export const tools: Array<Tool> = [
     name: "Skeleton Tool",
     description: "Create and visualize 3D skeleton poses with kinematic trees.",
     component: SkeletonTool,
+    experimental: true,
   },
 ];

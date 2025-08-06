@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, Heading, Text, Badge } from "@radix-ui/themes";
 
 import type { Tool } from "@/tools";
 
@@ -8,10 +8,13 @@ export interface ToolCardProps {
 
 export const ToolCard = ({ tool }: ToolCardProps) => {
   return (
-    <Card>
+    <Card style={{ position: "relative" }}>
       <Flex direction={"column"} gap={"4"} p="4">
         <Box>
-          <Heading>{tool.name}</Heading>
+          <Flex direction={"row"} justify={"between"} align={"center"}>
+            <Heading>{tool.name}</Heading>
+            {tool.experimental && <Badge color="orange">Experimental</Badge>}
+          </Flex>
           <Text>{tool.description}</Text>
         </Box>
         <tool.component />
