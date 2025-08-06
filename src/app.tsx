@@ -6,7 +6,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { ToolCard } from "@/components/misc/tool-card";
 
-export function App() {
+export const App = () => {
   return (
     <div className="bg-[#F9F9F8]">
       <Box className="w-full min-h-screen max-w-4xl mx-auto elative ">
@@ -24,4 +24,4 @@ export function App() {
       </Box>
     </div>
   );
-}
+};
