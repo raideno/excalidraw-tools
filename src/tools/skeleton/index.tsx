@@ -23,8 +23,8 @@ import { SwitchField } from "@/components/ui/switch-field";
 import { SelectField } from "@/components/ui/select-field";
 
 const DEFAULT_CONFIGURATION: SkeletonConfiguration = {
-  kinematicTree: "smpljoints",
-  showJointNumbers: true,
+  kinematicTree: "guoh3djoints",
+  showJointNumbers: false,
   csvData: "",
   jointSize: 16,
   scale: 200,
@@ -153,7 +153,12 @@ export const SkeletonTool: React.FC<SkeletonToolProps> = ({
           label="Kinematic Tree"
           value={configuration.kinematicTree}
           options={KINEMATIC_TREE_OPTIONS}
-          onChange={(value) => updateConfig("kinematicTree", value)}
+          onChange={(value) =>
+            updateConfig(
+              "kinematicTree",
+              value as SkeletonConfiguration["kinematicTree"]
+            )
+          }
         />
 
         <Flex gap="4">

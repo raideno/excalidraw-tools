@@ -1,5 +1,5 @@
 export interface SkeletonConfiguration {
-  kinematicTree: string;
+  kinematicTree: keyof typeof KINEMATIC_TREES;
   showJointNumbers: boolean;
   csvData?: string;
   jointSize: number;
