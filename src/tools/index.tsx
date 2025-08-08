@@ -3,6 +3,7 @@
 import { TableTool } from "@/tools/table";
 import { TimelineTool } from "@/tools/timeline";
 import { SkeletonTool } from "@/tools/skeleton";
+import { ProgressTool } from "@/tools/progress";
 
 export interface Tool {
   name: string;
@@ -16,6 +17,11 @@ export const tools: Array<Tool> = [
     name: "Table Tool",
     description: "Create and manage tables in Excalidraw.",
     component: TableTool,
+  },
+  {
+    name: "Progress Tool",
+    description: "Generate a simple progress bar JSON for Excalidraw.",
+    component: ProgressTool,
   },
   {
     name: "Timeline Tool",
