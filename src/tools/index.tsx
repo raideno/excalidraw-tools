@@ -4,34 +4,55 @@ import { TableTool } from "@/tools/table";
 import { TimelineTool } from "@/tools/timeline";
 import { SkeletonTool } from "@/tools/skeleton";
 import { ProgressTool } from "@/tools/progress";
+import {
+  BoxModelIcon,
+  TableIcon,
+  TimerIcon,
+  ValueIcon,
+} from "@radix-ui/react-icons";
 
 export interface Tool {
   name: string;
   description: string;
   component: React.FC;
   experimental?: boolean;
+  path: string;
+  icon?: React.ReactNode;
+  category: string;
 }
 
 export const tools: Array<Tool> = [
   {
+    icon: <TableIcon width={24} height={24} />,
     name: "Table Tool",
     description: "Create and manage tables in Excalidraw.",
     component: TableTool,
+    path: "/table",
+    category: "Data Visualization",
   },
   {
+    icon: <ValueIcon width={24} height={24} />,
     name: "Progress Tool",
     description: "Generate a simple progress bar JSON for Excalidraw.",
     component: ProgressTool,
+    path: "/progress",
+    category: "UI Components",
   },
   {
+    icon: <TimerIcon width={24} height={24} />,
     name: "Timeline Tool",
     description: "Create and manage timelines in Excalidraw.",
     component: TimelineTool,
+    path: "/timeline",
+    category: "Data Visualization",
   },
   {
+    icon: <BoxModelIcon width={24} height={24} />,
     name: "Skeleton Tool",
     description: "Create and visualize 3D skeleton poses with kinematic trees.",
     component: SkeletonTool,
     experimental: true,
+    path: "/skeleton",
+    category: "3D Graphics",
   },
-];
+] as const;

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Link as RouterLink } from "react-router-dom";
 
 import { GitHubLogoIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import {
@@ -30,9 +31,14 @@ export const Navbar: React.FC<NavbarProps> = ({ className, ...props }) => {
     >
       <MaxWidthBox>
         <Flex align="center" justify="between" gap="3">
-          <Heading as="h1" size="4" aria-label="Excalidraw Tools home">
-            🛠️ Excalidraw Tools
-          </Heading>
+          <RouterLink
+            to="/"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <Heading as="h1" size="4" aria-label="Excalidraw Tools home">
+              🛠️ Excalidraw Tools
+            </Heading>
+          </RouterLink>
           <Flex align="center" gap="2">
             <IconButton
               aria-label={
