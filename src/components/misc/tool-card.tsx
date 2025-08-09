@@ -1,4 +1,5 @@
-import { Box, Card, Flex, Heading, Text, Badge } from "@radix-ui/themes";
+import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes";
+import { useNavigate } from "react-router-dom";
 
 import type { Tool } from "@/tools";
 
@@ -7,17 +8,23 @@ export interface ToolCardProps {
 }
 
 export const ToolCard = ({ tool }: ToolCardProps) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(tool.path);
+  };
+
   return (
-    <Card style={{ position: "relative" }}>
-      <Flex direction={"column"} gap={"4"} p="4">
+    <Card
+      className="!cursor-pointer relative hover:outline hover:outline-[var(--accent-9)]"
+      onClick={handleCardClick}
+    >
+      <Flex direction="column" gap="4" p="4">
+        {tool.icon && <Box>{tool.icon}</Box>}
         <Box>
-          <Flex direction={"row"} justify={"between"} align={"center"}>
-            <Heading>{tool.name}</Heading>
-            {tool.experimental && <Badge color="orange">Experimental</Badge>}
-          </Flex>
-          <Text>{tool.description}</Text>
+          <Heading size="5">{tool.name}</Heading>
+          <Text color="gray">{tool.description}</Text>
         </Box>
-        <tool.component />
       </Flex>
     </Card>
   );
