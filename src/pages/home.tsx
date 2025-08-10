@@ -44,6 +44,7 @@ export const HomePage = () => {
             <Flex gap="2" wrap="wrap">
               {filters.map((filter) => (
                 <Button
+                  className="!cursor-pointer"
                   key={filter}
                   variant={activeFilter === filter ? "solid" : "outline"}
                   size="2"

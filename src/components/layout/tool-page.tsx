@@ -1,13 +1,7 @@
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Badge,
-  Button,
-  Link,
-} from "@radix-ui/themes";
+import { Link } from "react-router-dom";
+
+import { ArrowLeftIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
+import { Box, Flex, Heading, Text, Badge, Button } from "@radix-ui/themes";
 
 import type { Tool } from "@/tools";
 import { MaxWidthBox } from "@/components/layout/max-width-box";
@@ -18,15 +12,23 @@ export interface ToolPageProps {
 
 export const ToolPage = ({ tool }: ToolPageProps) => {
   return (
-    <div className="bg-[var(--color-panel)] min-h-screen">
+    <Box>
       <MaxWidthBox p={{ initial: "3", sm: "4" }}>
         <Box py={{ initial: "3", sm: "5" }}>
           <Flex direction="column" gap="6">
-            <Link href={__BASE_PATH__}>
-              <Button variant="ghost" style={{ alignSelf: "flex-start" }}>
-                <ArrowLeftIcon /> Back to Tools
-              </Button>
-            </Link>
+            <Flex direction={"row"} justify={"between"} align={"center"}>
+              <Link to={"/"}>
+                <Button variant="ghost" className="!cursor-pointer">
+                  <ArrowLeftIcon /> Back to Tools
+                </Button>
+              </Link>
+
+              <Link target="_blank" to={"https://excalidraw.com"}>
+                <Button variant="outline" className="!cursor-pointer">
+                  <ExternalLinkIcon /> Excalidraw
+                </Button>
+              </Link>
+            </Flex>
 
             <Box>
               <Flex direction="row" justify="between" align="center" mb="2">
@@ -46,6 +48,6 @@ export const ToolPage = ({ tool }: ToolPageProps) => {
           </Flex>
         </Box>
       </MaxWidthBox>
-    </div>
+    </Box>
   );
 };
