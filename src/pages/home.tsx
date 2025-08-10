@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Box, Flex, Heading, Text, Button, Grid } from "@radix-ui/themes";
 
@@ -10,7 +10,34 @@ import { MaxWidthBox } from "@/components/layout/max-width-box";
 type FilterType = (typeof tools)[number]["category"];
 
 export const HomePage = () => {
-  const [activeFilter, setActiveFilter] = useState<FilterType>("All");
+  // Load initial filter from localStorage
+  const loadInitialFilter = (): FilterType => {
+    try {
+      const saved = localStorage.getItem("excalidraw-tools-home-filter");
+      if (saved) {
+        const parsed = JSON.parse(saved) as FilterType;
+        // Validate that the filter is still valid
+        const filters = Array.from(
+          new Set(["All", ...tools.map((tool) => tool.category), "Experimental"])
+        ) as FilterType[];
+        return filters.includes(parsed) ? parsed : "All";
+      }
+    } catch (error) {
+      console.warn("Failed to load home filter:", error);
+    }
+    return "All";
+  };
+
+  const [activeFilter, setActiveFilter] = useState<FilterType>(loadInitialFilter);
+
+  // Save filter to localStorage when it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem("excalidraw-tools-home-filter", JSON.stringify(activeFilter));
+    } catch (error) {
+      console.warn("Failed to save home filter:", error);
+    }
+  }, [activeFilter]);
 
   const filters: FilterType[] = Array.from(
     new Set(["All", ...tools.map((tool) => tool.category), "Experimental"])

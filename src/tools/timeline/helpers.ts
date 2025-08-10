@@ -10,7 +10,7 @@ export interface Span {
   line: number;
 }
 
-export interface TimelineConfiguration {
+export interface TimelineConfiguration extends Record<string, unknown> {
   ticks: "none" | "transition" | "all";
   spans: Array<Span>;
 }

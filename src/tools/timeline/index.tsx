@@ -4,6 +4,7 @@ import { CopyIcon, Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { Box, Button, Flex, Text, IconButton, Grid } from "@radix-ui/themes";
 
 import { cn } from "@/lib/utils";
+import { useToolPersistence } from "@/lib/use-tool-persistence";
 
 import {
   ONE_LINE_EXAMPLE,
@@ -14,6 +15,7 @@ import type { TimelineConfiguration, Span } from "@/tools/timeline/helpers";
 
 import { SelectField } from "@/components/ui/select-field";
 import { NumberInputField } from "@/components/ui/number-input-field";
+import { HistoryPanel } from "@/components/misc/history-panel";
 
 const DEFAULT_TIMELINE_CONFIGURATION: TimelineConfiguration = {
   ticks: "transition",
@@ -33,8 +35,21 @@ export interface TimelineToolProps {
 export const TimelineTool: React.FC<TimelineToolProps> = ({
   defaultConfiguration = DEFAULT_TIMELINE_CONFIGURATION,
 }) => {
-  const [configuration, setConfiguration] =
-    React.useState<TimelineConfiguration>(defaultConfiguration);
+  const {
+    configuration,
+    updateConfiguration,
+    history,
+    addToHistory,
+    loadFromHistory,
+    deleteFromHistory,
+    clearHistory,
+    resetConfiguration,
+  } = useToolPersistence({
+    toolName: "timeline",
+    defaultConfiguration: defaultConfiguration,
+    maxHistoryItems: 15,
+  });
+
   const [status, setStatus] = React.useState<Status>({
     type: null,
     message: "",
@@ -45,7 +60,7 @@ export const TimelineTool: React.FC<TimelineToolProps> = ({
     key: K,
     value: TimelineConfiguration[K]
   ) => {
-    setConfiguration((prev) => ({ ...prev, [key]: value }));
+    updateConfiguration(key, value);
   };
 
   const updateSpan = <K extends keyof Span>(
@@ -55,7 +70,7 @@ export const TimelineTool: React.FC<TimelineToolProps> = ({
   ) => {
     const newSpans = [...configuration.spans];
     newSpans[index][key] = value;
-    setConfiguration((prev) => ({ ...prev, spans: newSpans }));
+    updateConfiguration("spans", newSpans);
   };
 
   const addSpan = () => {
@@ -64,22 +79,16 @@ export const TimelineTool: React.FC<TimelineToolProps> = ({
       end: 5,
       line: 1,
     };
-    setConfiguration((prev) => ({
-      ...prev,
-      spans: [...prev.spans, newSpan],
-    }));
+    updateConfiguration("spans", [...configuration.spans, newSpan]);
   };
 
   const removeSpan = (index: number) => {
     const newSpans = configuration.spans.filter((_, i) => i !== index);
-    setConfiguration((prev) => ({ ...prev, spans: newSpans }));
+    updateConfiguration("spans", newSpans);
   };
 
   const loadExample = (exampleSpans: Span[]) => {
-    setConfiguration((prev) => ({
-      ...prev,
-      spans: [...exampleSpans],
-    }));
+    updateConfiguration("spans", [...exampleSpans]);
   };
 
   const generateAndCopyTimeline = async () => {
@@ -91,6 +100,10 @@ export const TimelineTool: React.FC<TimelineToolProps> = ({
       const jsonString = JSON.stringify(json, null, 2);
 
       await navigator.clipboard.writeText(jsonString);
+
+      // Add to history with a descriptive name
+      const historyName = `Timeline (${configuration.spans.length} spans, ${configuration.ticks} ticks)`;
+      addToHistory(configuration, historyName);
 
       setStatus({
         type: "success",
@@ -134,6 +147,14 @@ export const TimelineTool: React.FC<TimelineToolProps> = ({
   return (
     <Box>
       <Flex direction="column" gap="4">
+        <HistoryPanel
+          history={history}
+          onLoadFromHistory={loadFromHistory}
+          onDeleteFromHistory={deleteFromHistory}
+          onClearHistory={clearHistory}
+          onResetConfiguration={resetConfiguration}
+        />
+
         <Box>
           <Text size="2" weight="bold" mb="2">
             Examples

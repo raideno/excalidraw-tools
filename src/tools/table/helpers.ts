@@ -1,4 +1,4 @@
-export interface TableConfiguration {
+export interface TableConfiguration extends Record<string, unknown> {
   rows: number;
   cols: number;
   cellWidth: number;

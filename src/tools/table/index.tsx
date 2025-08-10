@@ -4,12 +4,14 @@ import { CopyIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { Box, Button, Flex, Text, IconButton } from "@radix-ui/themes";
 
 import { cn } from "@/lib/utils";
+import { useToolPersistence } from "@/lib/use-tool-persistence";
 
 import { generateTableData } from "@/tools/table/helpers";
 import type { TableConfiguration } from "@/tools/table/helpers";
 
 import { NumberInputField } from "@/components/ui/number-input-field";
 import { SwitchField } from "@/components/ui/switch-field";
+import { HistoryPanel } from "@/components/misc/history-panel";
 
 const DEFAULT_CONFIGURATION: TableConfiguration = {
   rows: 5,
@@ -34,8 +36,29 @@ export type TableToolProps = {
 export const TableTool: React.FC<TableToolProps> = ({
   defaultConfiguration = DEFAULT_CONFIGURATION,
 }) => {
-  const [configuration, setConfiguration] =
-    React.useState<TableConfiguration>(defaultConfiguration);
+  const {
+    configuration,
+    updateConfiguration,
+    history,
+    addToHistory,
+    loadFromHistory,
+    deleteFromHistory,
+    clearHistory,
+    resetConfiguration,
+  } = useToolPersistence({
+    toolName: "table",
+    defaultConfiguration: defaultConfiguration,
+    maxHistoryItems: 15,
+    versionInfo: {
+      currentVersion: 1,
+      // migrations: {
+      //   2: (config) => {
+      //     // Example migration from version 1 to 2
+      //     return { ...config, newField: "defaultValue" };
+      //   }
+      // }
+    },
+  });
 
   const [status, setStatus] = React.useState<Status>({
     type: null,
@@ -48,7 +71,7 @@ export const TableTool: React.FC<TableToolProps> = ({
     key: keyof TableConfiguration,
     value: number | boolean
   ) => {
-    setConfiguration((prev) => ({ ...prev, [key]: value }));
+    updateConfiguration(key, value);
   };
 
   const generateAndCopyTable = async () => {
@@ -60,6 +83,15 @@ export const TableTool: React.FC<TableToolProps> = ({
       const jsonString = JSON.stringify(json, null, 2);
 
       await navigator.clipboard.writeText(jsonString);
+
+      // Add to history with a descriptive name
+      const historyName = `${configuration.rows}×${configuration.cols} Table${
+        configuration.hasHeaderRow ? " (Header)" : ""
+      }${configuration.hasPrimaryColumn ? " (Primary)" : ""}${
+        configuration.hasStripes ? " (Striped)" : ""
+      }`;
+      
+      addToHistory(configuration, historyName);
 
       setStatus({
         type: "success",
@@ -104,6 +136,14 @@ export const TableTool: React.FC<TableToolProps> = ({
   return (
     <Box>
       <Flex direction="column" gap="3">
+        <HistoryPanel
+          history={history}
+          onLoadFromHistory={loadFromHistory}
+          onDeleteFromHistory={deleteFromHistory}
+          onClearHistory={clearHistory}
+          onResetConfiguration={resetConfiguration}
+        />
+
         <Flex gap="4">
           <NumberInputField
             label="Rows"

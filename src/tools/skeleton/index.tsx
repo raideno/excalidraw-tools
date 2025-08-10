@@ -11,6 +11,7 @@ import {
 } from "@radix-ui/themes";
 
 import { cn } from "@/lib/utils";
+import { useToolPersistence } from "@/lib/use-tool-persistence";
 
 import {
   generateSkeletonData,
@@ -21,6 +22,7 @@ import type { SkeletonConfiguration } from "@/tools/skeleton/helpers";
 import { NumberInputField } from "@/components/ui/number-input-field";
 import { SwitchField } from "@/components/ui/switch-field";
 import { SelectField } from "@/components/ui/select-field";
+import { HistoryPanel } from "@/components/misc/history-panel";
 
 const DEFAULT_CONFIGURATION: SkeletonConfiguration = {
   kinematicTree: "guoh3djoints",
@@ -43,8 +45,20 @@ export type SkeletonToolProps = {
 export const SkeletonTool: React.FC<SkeletonToolProps> = ({
   defaultConfiguration = DEFAULT_CONFIGURATION,
 }) => {
-  const [configuration, setConfiguration] =
-    React.useState<SkeletonConfiguration>(defaultConfiguration);
+  const {
+    configuration,
+    updateConfiguration,
+    history,
+    addToHistory,
+    loadFromHistory,
+    deleteFromHistory,
+    clearHistory,
+    resetConfiguration,
+  } = useToolPersistence({
+    toolName: "skeleton",
+    defaultConfiguration: defaultConfiguration,
+    maxHistoryItems: 15,
+  });
 
   const [status, setStatus] = React.useState<Status>({
     type: null,
@@ -58,7 +72,7 @@ export const SkeletonTool: React.FC<SkeletonToolProps> = ({
     key: K,
     value: SkeletonConfiguration[K]
   ) => {
-    setConfiguration((prev) => ({ ...prev, [key]: value }));
+    updateConfiguration(key, value);
   };
 
   const generateAndCopySkeleton = async () => {
@@ -70,6 +84,12 @@ export const SkeletonTool: React.FC<SkeletonToolProps> = ({
       const jsonString = JSON.stringify(json, null, 2);
 
       await navigator.clipboard.writeText(jsonString);
+
+      // Add to history with a descriptive name
+      const historyName = `Skeleton (${configuration.kinematicTree}, ${configuration.jointSize}px joints)${
+        configuration.showJointNumbers ? " +Numbers" : ""
+      }`;
+      addToHistory(configuration, historyName);
 
       setStatus({
         type: "success",
@@ -149,6 +169,14 @@ export const SkeletonTool: React.FC<SkeletonToolProps> = ({
   return (
     <Box>
       <Flex direction="column" gap="3">
+        <HistoryPanel
+          history={history}
+          onLoadFromHistory={loadFromHistory}
+          onDeleteFromHistory={deleteFromHistory}
+          onClearHistory={clearHistory}
+          onResetConfiguration={resetConfiguration}
+        />
+
         <SelectField
           label="Kinematic Tree"
           value={configuration.kinematicTree}

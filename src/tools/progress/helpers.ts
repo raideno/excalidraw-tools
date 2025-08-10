@@ -1,4 +1,4 @@
-export interface ProgressConfiguration {
+export interface ProgressConfiguration extends Record<string, unknown> {
   width: number;
   height: number;
   progress: number;
