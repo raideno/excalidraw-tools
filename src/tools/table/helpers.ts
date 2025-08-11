@@ -1,15 +1,7 @@
-export interface TableConfiguration extends Record<string, unknown> {
-  rows: number;
-  cols: number;
-  cellWidth: number;
-  cellHeight: number;
-  hasHeaderRow: boolean;
-  hasPrimaryColumn: boolean;
-  hasStripes: boolean;
-}
+import type { TableConfiguration } from "./configuration";
 
 export const generateTableData = (tableConfiguration: TableConfiguration) => {
-  const elements = [];
+  const elements: Array<unknown> = [];
   let idCounter = 1;
   const startX = 100;
   const startY = 100;

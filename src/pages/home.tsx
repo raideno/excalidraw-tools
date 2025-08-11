@@ -10,15 +10,17 @@ import { MaxWidthBox } from "@/components/layout/max-width-box";
 type FilterType = (typeof tools)[number]["category"];
 
 export const HomePage = () => {
-  // Load initial filter from localStorage
   const loadInitialFilter = (): FilterType => {
     try {
       const saved = localStorage.getItem("excalidraw-tools-home-filter");
       if (saved) {
         const parsed = JSON.parse(saved) as FilterType;
-        // Validate that the filter is still valid
         const filters = Array.from(
-          new Set(["All", ...tools.map((tool) => tool.category), "Experimental"])
+          new Set([
+            "All",
+            ...tools.map((tool) => tool.category),
+            "Experimental",
+          ])
         ) as FilterType[];
         return filters.includes(parsed) ? parsed : "All";
       }
@@ -28,12 +30,15 @@ export const HomePage = () => {
     return "All";
   };
 
-  const [activeFilter, setActiveFilter] = useState<FilterType>(loadInitialFilter);
+  const [activeFilter, setActiveFilter] =
+    useState<FilterType>(loadInitialFilter);
 
-  // Save filter to localStorage when it changes
   useEffect(() => {
     try {
-      localStorage.setItem("excalidraw-tools-home-filter", JSON.stringify(activeFilter));
+      localStorage.setItem(
+        "excalidraw-tools-home-filter",
+        JSON.stringify(activeFilter)
+      );
     } catch (error) {
       console.warn("Failed to save home filter:", error);
     }

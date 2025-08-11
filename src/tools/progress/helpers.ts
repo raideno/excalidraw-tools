@@ -1,13 +1,7 @@
-export interface ProgressConfiguration extends Record<string, unknown> {
-  width: number;
-  height: number;
-  progress: number;
-  showProgressTick: boolean;
-  showEndTicks: boolean;
-}
+import type { ProgressConfiguration } from "@/tools/progress/configuration";
 
 export const generateProgressData = (config: ProgressConfiguration) => {
-  const elements = [];
+  const elements: Array<unknown> = [];
   let idCounter = 1;
   const nextId = () => {
     const id = String(idCounter);

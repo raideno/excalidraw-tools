@@ -11,87 +11,81 @@ export interface GenerationHistoryItem<T = Record<string, unknown>> {
 
 export interface ToolVersionInfo {
   currentVersion: number;
-  migrations?: Record<number, (config: Record<string, unknown>) => Record<string, unknown>>;
+  migrations?: Record<
+    number,
+    (config: Record<string, unknown>) => Record<string, unknown>
+  >;
 }
 
 export interface UseToolPersistenceOptions<T> {
   toolName: string;
   defaultConfiguration: T;
   maxHistoryItems?: number;
-  versionInfo: ToolVersionInfo;
+  version?: number;
 }
 
-export const useToolPersistence = <T>({
+export const useToolPersistence = <T extends Record<string, unknown>>({
   toolName,
   defaultConfiguration,
   maxHistoryItems = 10,
-  versionInfo,
+  version = 1,
 }: UseToolPersistenceOptions<T>) => {
   const storageKey = `excalidraw-tools-${toolName}`;
   const historyKey = `${storageKey}-history`;
 
-  // Migration helper function
-  const migrateConfiguration = useCallback((config: Record<string, unknown>, fromVersion: number): T => {
-    let migratedConfig = { ...config };
-    
-    // Apply migrations in sequence from the stored version to current
-    for (let version = fromVersion; version < versionInfo.currentVersion; version++) {
-      const migration = versionInfo.migrations?.[version + 1];
-      if (migration) {
-        try {
-          migratedConfig = migration(migratedConfig);
-        } catch (error) {
-          console.warn(`Migration from version ${version} to ${version + 1} failed for ${toolName}:`, error);
-          // If migration fails, use default configuration
-          return defaultConfiguration;
-        }
-      }
-    }
-    
-    return { ...defaultConfiguration, ...migratedConfig } as T;
-  }, [versionInfo, defaultConfiguration, toolName]);
+  const migrateConfiguration = useCallback(
+    (_configuration: T, fromVersion: number): T => {
+      console.warn(
+        `Migration from version ${fromVersion} to ${version} not implemented. Using default configuration.`
+      );
+      return defaultConfiguration;
+    },
+    [version, defaultConfiguration]
+  );
 
-  // Load initial configuration from localStorage
   const loadConfiguration = useCallback((): T => {
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved) {
         const parsed = JSON.parse(saved);
         const storedVersion = parsed.version || 1;
-        
-        if (storedVersion < versionInfo.currentVersion) {
-          // Need migration
+
+        if (storedVersion < version) {
           const migrated = migrateConfiguration(parsed, storedVersion);
-          // Save the migrated version
-          localStorage.setItem(storageKey, JSON.stringify({ ...migrated, version: versionInfo.currentVersion }));
-          return migrated;
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify({ ...migrated, version })
+          );
+          return { ...defaultConfiguration, ...migrated };
         }
-        
-        // Same version, merge with default to handle new fields
+
         return { ...defaultConfiguration, ...parsed };
       }
     } catch (error) {
       console.warn(`Failed to load configuration for ${toolName}:`, error);
     }
     return defaultConfiguration;
-  }, [storageKey, defaultConfiguration, toolName, versionInfo, migrateConfiguration]);
+  }, [
+    storageKey,
+    defaultConfiguration,
+    toolName,
+    version,
+    migrateConfiguration,
+  ]);
 
-  // Load history from localStorage with migration support
   const loadHistory = useCallback((): GenerationHistoryItem<T>[] => {
     try {
       const saved = localStorage.getItem(historyKey);
       if (saved) {
         const items: GenerationHistoryItem<T>[] = JSON.parse(saved);
-        
-        // Mark items as deprecated if they're from older versions and no migration exists
-        return items.map(item => {
+
+        return items.map((item) => {
           const itemVersion = item.version || 1;
-          const isDeprecated = itemVersion < versionInfo.currentVersion && 
-                              !versionInfo.migrations?.[itemVersion + 1];
-          
+          const isDeprecated = itemVersion < version;
+
           return {
             ...item,
-            deprecated: isDeprecated
+            deprecated: isDeprecated,
           };
         });
       }
@@ -99,22 +93,21 @@ export const useToolPersistence = <T>({
       console.warn(`Failed to load history for ${toolName}:`, error);
     }
     return [];
-  }, [historyKey, toolName, versionInfo]);
+  }, [historyKey, toolName, version]);
 
   const [configuration, setConfigurationState] = useState<T>(loadConfiguration);
-  const [history, setHistoryState] = useState<GenerationHistoryItem<T>[]>(loadHistory);
+  const [history, setHistoryState] =
+    useState<GenerationHistoryItem<T>[]>(loadHistory);
 
-  // Save configuration to localStorage whenever it changes
   useEffect(() => {
     try {
-      const configWithVersion = { ...configuration, version: versionInfo.currentVersion };
+      const configWithVersion = { ...configuration, version };
       localStorage.setItem(storageKey, JSON.stringify(configWithVersion));
     } catch (error) {
       console.warn(`Failed to save configuration for ${toolName}:`, error);
     }
-  }, [configuration, storageKey, toolName, versionInfo.currentVersion]);
+  }, [configuration, storageKey, toolName, version]);
 
-  // Save history to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem(historyKey, JSON.stringify(history));
@@ -128,51 +121,56 @@ export const useToolPersistence = <T>({
   }, []);
 
   const updateConfiguration = useCallback((key: keyof T, value: T[keyof T]) => {
-    setConfigurationState(prev => ({
+    setConfigurationState((prev) => ({
       ...prev,
       [key]: value,
     }));
   }, []);
 
-  const addToHistory = useCallback((config: T, name?: string) => {
-    const newItem: GenerationHistoryItem<T> = {
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: Date.now(),
-      configuration: { ...config },
-      name,
-      version: versionInfo.currentVersion,
-    };
+  const addToHistory = useCallback(
+    (config: T, name?: string) => {
+      const newItem: GenerationHistoryItem<T> = {
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        timestamp: Date.now(),
+        configuration: { ...config },
+        name,
+        version,
+      };
 
-    setHistoryState(prev => {
-      const newHistory = [newItem, ...prev];
-      // Keep only the most recent items
-      return newHistory.slice(0, maxHistoryItems);
-    });
+      setHistoryState((prev) => {
+        const newHistory = [newItem, ...prev];
+        return newHistory.slice(0, maxHistoryItems);
+      });
 
-    return newItem.id;
-  }, [maxHistoryItems, versionInfo.currentVersion]);
+      return newItem.id;
+    },
+    [maxHistoryItems, version]
+  );
 
-  const loadFromHistory = useCallback((item: GenerationHistoryItem<T>) => {
-    if (item.deprecated) {
-      console.warn(`Loading deprecated configuration from version ${item.version}. Consider updating to current version ${versionInfo.currentVersion}.`);
-    }
-    
-    // Try to migrate if needed and possible
-    let configToLoad = item.configuration;
-    if (item.version && item.version < versionInfo.currentVersion) {
-      try {
-        configToLoad = migrateConfiguration(item.configuration as Record<string, unknown>, item.version);
-      } catch (error) {
-        console.warn(`Failed to migrate configuration from version ${item.version}:`, error);
-        // Use the original configuration if migration fails
+  const loadFromHistory = useCallback(
+    (item: GenerationHistoryItem<T>) => {
+      if (item.deprecated) {
+        console.warn(
+          `Loading deprecated configuration from version ${item.version}. Consider updating to current version ${version}.`
+        );
       }
-    }
-    
-    setConfiguration(configToLoad);
-  }, [setConfiguration, versionInfo.currentVersion, migrateConfiguration]);
+
+      let configToLoad = item.configuration;
+      if (item.version && item.version < version) {
+        try {
+          configToLoad = migrateConfiguration(item.configuration, item.version);
+        } catch (error) {
+          console.warn("Migration failed, using configuration as-is:", error);
+        }
+      }
+
+      setConfiguration(configToLoad);
+    },
+    [setConfiguration, version, migrateConfiguration]
+  );
 
   const deleteFromHistory = useCallback((id: string) => {
-    setHistoryState(prev => prev.filter(item => item.id !== id));
+    setHistoryState((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
   const clearHistory = useCallback(() => {

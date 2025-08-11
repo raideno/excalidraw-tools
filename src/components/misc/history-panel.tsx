@@ -149,7 +149,10 @@ export const HistoryPanel = <T extends Record<string, unknown>>({
                                   </Text>
                                   {item.deprecated && (
                                     <Badge color="orange" size="1">
-                                      <ExclamationTriangleIcon width={10} height={10} />
+                                      <ExclamationTriangleIcon
+                                        width={10}
+                                        height={10}
+                                      />
                                       Deprecated
                                     </Badge>
                                   )}
@@ -175,8 +178,13 @@ export const HistoryPanel = <T extends Record<string, unknown>>({
                                   )}
                                 </Text>
                                 {item.deprecated && (
-                                  <Text size="1" color="orange" style={{ marginTop: "4px" }}>
-                                    This configuration is from an older version and may not work correctly.
+                                  <Text
+                                    size="1"
+                                    color="orange"
+                                    style={{ marginTop: "4px" }}
+                                  >
+                                    This configuration is from an older version
+                                    and may not work correctly.
                                   </Text>
                                 )}
                               </Box>
