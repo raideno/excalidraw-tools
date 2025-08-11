@@ -1,1 +1,72 @@
 @import "tailwindcss";
+
+.excalidraw-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.excalidraw-preview .excalidraw {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+  transform-origin: center center !important;
+  transition: transform 0.3s ease !important;
+}
+
+.excalidraw-preview .excalidraw .App-menu,
+.excalidraw-preview .excalidraw .App-toolbar,
+.excalidraw-preview .excalidraw .layer-ui__wrapper,
+.excalidraw-preview .excalidraw .footer,
+.excalidraw-preview .excalidraw .FixedSideContainer,
+.excalidraw-preview .excalidraw .welcome-screen-decor,
+.excalidraw-preview .excalidraw .welcome-screen-center,
+.excalidraw-preview .excalidraw .sidebar,
+.excalidraw-preview .excalidraw .App-menu_top,
+.excalidraw-preview .excalidraw .App-menu_bottom,
+.excalidraw-preview .excalidraw .Island,
+.excalidraw-preview .excalidraw .scroll-back-to-content,
+.excalidraw-preview .excalidraw .layer-ui__wrapper__top-right,
+.excalidraw-preview .excalidraw .layer-ui__wrapper__top-left,
+.excalidraw-preview .excalidraw .layer-ui__wrapper__footer-left,
+.excalidraw-preview .excalidraw .layer-ui__wrapper__footer-center,
+.excalidraw-preview .excalidraw .layer-ui__wrapper__footer-right,
+.excalidraw-preview .excalidraw .help-icon,
+.excalidraw-preview .excalidraw .zen-mode-transition,
+.excalidraw-preview .excalidraw .Stats {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.excalidraw-preview .excalidraw .canvas-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+}
+
+.excalidraw-preview .excalidraw canvas {
+  cursor: default !important;
+  pointer-events: none !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+.excalidraw-preview .excalidraw *::-webkit-scrollbar {
+  display: none !important;
+}
+
+.excalidraw-preview .excalidraw * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
