@@ -1,4 +1,4 @@
-export interface SkeletonConfiguration {
+export interface SkeletonConfiguration extends Record<string, unknown> {
   kinematicTree: keyof typeof KINEMATIC_TREES;
   showJointNumbers: boolean;
   csvData?: string;

@@ -4,11 +4,11 @@ import { Box } from "@radix-ui/themes";
 
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { ToolPage } from "@/components/layout/tool-page";
 
-import { tools } from "@/tools";
+import { tools, type Tool } from "@/tools";
 
 import { HomePage } from "@/pages/home";
+import { ToolPage } from "@/pages/tool-page";
 
 export const App = () => {
   return (
@@ -18,7 +18,15 @@ export const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           {tools.map((tool) => (
-            <Route path={tool.path} element={<ToolPage tool={tool} />} />
+            <Route
+              key={tool.path}
+              path={tool.path}
+              element={
+                <ToolPage
+                  tool={tool as unknown as Tool<Record<string, unknown>>}
+                />
+              }
+            />
           ))}
         </Routes>
         <Footer />

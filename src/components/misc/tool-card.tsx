@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import type { Tool } from "@/tools";
 
-export interface ToolCardProps {
-  tool: Tool;
+export interface ToolCardProps<T extends Record<string, unknown>> {
+  tool: Tool<T>;
 }
 
-export const ToolCard = ({ tool }: ToolCardProps) => {
+export const ToolCard = <T extends Record<string, unknown>>({
+  tool,
+}: ToolCardProps<T>) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {

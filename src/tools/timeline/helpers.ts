@@ -1,19 +1,8 @@
-import { COLOR_PALETTE } from "@excalidraw/common";
-
 import type { Radians } from "@excalidraw/math";
+import { COLOR_PALETTE } from "@excalidraw/common";
 import type { ExcalidrawRectangleElement } from "@excalidraw/excalidraw/element/types";
 
-export interface Span {
-  // NOTE: integer
-  start: number;
-  end: number;
-  line: number;
-}
-
-export interface TimelineConfiguration {
-  ticks: "none" | "transition" | "all";
-  spans: Array<Span>;
-}
+import type { TimelineConfiguration } from "@/tools/timeline/configuration";
 
 const START_X = 100;
 const START_Y = 150;

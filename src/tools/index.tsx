@@ -1,58 +1,37 @@
 // TODO: make it auto import tools using some vite plugin rather than having to manually import them.
 
-import { TableTool } from "@/tools/table";
-import { TimelineTool } from "@/tools/timeline";
-import { SkeletonTool } from "@/tools/skeleton";
-import { ProgressTool } from "@/tools/progress";
-import {
-  BoxModelIcon,
-  TableIcon,
-  TimerIcon,
-  ValueIcon,
-} from "@radix-ui/react-icons";
+import { TableTool } from "@/tools/table/configuration";
+import { TimelineTool } from "@/tools/timeline/configuration";
+import { SkeletonTool } from "@/tools/skeleton/configuration";
+import { ProgressTool } from "@/tools/progress/configuration";
 
-export interface Tool {
+export interface ToolConfiguration<T extends Record<string, unknown>> {
+  defaultConfiguration: T;
+  generateFunction: (config: T) => Record<string, unknown>;
+  getHistoryName?: (config: T) => string;
+  version?: number;
+}
+
+export interface ToolComponentProps<T extends Record<string, unknown>> {
+  configuration: T;
+  onConfigurationChange: (key: keyof T, value: T[keyof T]) => void;
+}
+
+export interface Tool<T extends Record<string, unknown>> {
   name: string;
   description: string;
-  component: React.FC;
+  component: React.FC<ToolComponentProps<T>>;
+  configuration: ToolConfiguration<T>;
   experimental?: boolean;
   path: string;
   icon?: React.ReactNode;
   category: string;
 }
 
-export const tools: Array<Tool> = [
-  {
-    icon: <TableIcon width={24} height={24} />,
-    name: "Table Tool",
-    description: "Create and manage tables in Excalidraw.",
-    component: TableTool,
-    path: "/table",
-    category: "Data Visualization",
-  },
-  {
-    icon: <ValueIcon width={24} height={24} />,
-    name: "Progress Tool",
-    description: "Generate a simple progress bar JSON for Excalidraw.",
-    component: ProgressTool,
-    path: "/progress",
-    category: "UI Components",
-  },
-  {
-    icon: <TimerIcon width={24} height={24} />,
-    name: "Timeline Tool",
-    description: "Create and manage timelines in Excalidraw.",
-    component: TimelineTool,
-    path: "/timeline",
-    category: "Data Visualization",
-  },
-  {
-    icon: <BoxModelIcon width={24} height={24} />,
-    name: "Skeleton Tool",
-    description: "Create and visualize 3D skeleton poses with kinematic trees.",
-    component: SkeletonTool,
-    experimental: true,
-    path: "/skeleton",
-    category: "3D Graphics",
-  },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const tools: Array<Tool<any>> = [
+  TableTool,
+  ProgressTool,
+  TimelineTool,
+  SkeletonTool,
 ] as const;

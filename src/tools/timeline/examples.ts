@@ -1,4 +1,4 @@
-import type { Span } from "@/tools/timeline/helpers";
+import type { Span } from "@/tools/timeline/configuration";
 
 export const ONE_LINE_EXAMPLE: Span[] = [
   {
