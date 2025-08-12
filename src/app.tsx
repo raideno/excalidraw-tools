@@ -10,10 +10,12 @@ import { tools, type Tool } from "@/tools";
 import { HomePage } from "@/pages/home";
 import { ToolPage } from "@/pages/tool-page";
 
+const base = import.meta.env.PROD ? __BASE_PATH__ : "/";
+
 export const App = () => {
   return (
     <Box className="h-screen !grid grid-rows-[auto_1fr_auto]">
-      <Router basename={__BASE_PATH__}>
+      <Router basename={base}>
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
