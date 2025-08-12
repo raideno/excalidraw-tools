@@ -42,6 +42,7 @@ export const ToolPage = ({ tool }: ToolPageProps) => {
     deleteFromHistory,
     clearHistory,
     resetConfiguration,
+    closeStatus,
   } = useToolManager({
     toolName: tool.name,
     defaultConfiguration: tool.configuration.defaultConfiguration,
@@ -210,6 +211,8 @@ export const ToolPage = ({ tool }: ToolPageProps) => {
                   📝 Generate & Copy
                 </Button>
 
+                <StatusDisplay status={status} onClose={closeStatus} />
+
                 <Box>
                   <Heading size={"5"} mb={"3"}>
                     Preview
@@ -242,8 +245,6 @@ export const ToolPage = ({ tool }: ToolPageProps) => {
                     </Box>
                   </Card>
                 </Box>
-
-                <StatusDisplay status={status} />
               </Flex>
             </Box>
           </Flex>
