@@ -9,6 +9,7 @@ import { tools, type Tool } from "@/tools";
 
 import { HomePage } from "@/pages/home";
 import { ToolPage } from "@/pages/tool-page";
+import { NotFoundPage } from "@/pages/not-found";
 
 export const App = () => {
   return (
@@ -28,6 +29,7 @@ export const App = () => {
               }
             />
           ))}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer />
       </Router>
