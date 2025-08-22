@@ -3,6 +3,7 @@ import {
   useToolPersistence,
   type GenerationHistoryItem,
 } from "@/lib/use-tool-persistence";
+import { Link } from "@radix-ui/themes";
 
 export interface UseToolManagerOptions<T extends Record<string, unknown>> {
   toolName: string;
@@ -19,7 +20,7 @@ export interface ToolManagerState<T extends Record<string, unknown>> {
   setConfiguration: (config: T) => void;
   status: {
     type: "success" | "error" | null;
-    message: string;
+    message: React.ReactNode | string;
     data?: string;
   };
   isLoading: boolean;
@@ -59,7 +60,7 @@ export const useToolManager = <T extends Record<string, unknown>>({
 
   const [status, setStatus] = useState<{
     type: "success" | "error" | null;
-    message: string;
+    message: React.ReactNode | string;
     data?: string;
   }>({
     type: null,
@@ -97,7 +98,15 @@ export const useToolManager = <T extends Record<string, unknown>>({
 
       setStatus({
         type: "success",
-        message: `✅ ${toolName} copied to clipboard! Go to excalidraw.com and press Ctrl+V to paste.`,
+        message: (
+          <>
+            ✅ {toolName} copied to clipboard! Go to{" "}
+            <Link target="_blank" href="https://www.excalidraw.com">
+              excalidraw.com
+            </Link>{" "}
+            and press Ctrl+V to paste.
+          </>
+        ),
       });
     } catch (error) {
       console.error(`[error]: failed auto copy for ${toolName}.`, error);
