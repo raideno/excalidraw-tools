@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 export interface StatusDisplayProps {
   status: {
     type: "success" | "error" | null;
-    message: string;
+    message: React.ReactNode | string;
     data?: string;
   };
   onClose?: () => void;
