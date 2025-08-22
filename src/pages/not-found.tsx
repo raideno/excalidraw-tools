@@ -28,7 +28,7 @@ export const NotFoundPage = () => {
         </Box>
 
         <Flex gap="3" align="center">
-          <Button asChild variant="solid">
+          <Button asChild variant="classic">
             <Link to="/">Go Home</Link>
           </Button>
           <Button asChild variant="outline">
